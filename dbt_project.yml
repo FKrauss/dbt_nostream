@@ -1,11 +1,11 @@
 
 config-version: 2
 
-name: "jaffle_shop"
+name: "dbt_nostream"
 version: "1.0.0"
 require-dbt-version: ">=1.5.0"
 
-profile: default
+profile: dbt_nostream
 
 model-paths: ["models"]
 seed-paths: ["seeds"]
@@ -20,13 +20,11 @@ vars:
   "dbt_date:time_zone": "America/Los_Angeles"
 
 seeds:
-  jaffle_shop:
+  dbt_nostream:
     +schema: raw
-    jaffle-data:
-      +enabled: "{{ var('load_source_data', false) }}"
 
 models:
-  jaffle_shop:
+  dbt_nostream:
     staging:
       +materialized: view
     marts:
