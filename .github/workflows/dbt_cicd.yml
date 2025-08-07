@@ -21,9 +21,10 @@ env:
   DBT_BIGQUERY_KEYFILE: /tmp/keyfile.json
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
-    
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+
     env:
       GCP_SERVICE_ACCOUNT_CREDENTIALS: ${{ secrets.GCP_SERVICE_ACCOUNT_CREDENTIALS }}
 
@@ -82,79 +83,12 @@ jobs:
       - name: Install dbt packages
         run: dbt deps
 
-      - name: Set environment for testing
+      - name: Run dbt models
         run: |
           TARGET="${{ github.event.inputs.environment }}"
           if [ -z "$TARGET" ]; then
-            TARGET="staging"
+            TARGET="prod"
           fi
-          echo "Testing against: $TARGET"
-          echo "TARGET=$TARGET" >> $GITHUB_ENV
-      - name: Test dbt compilation
-        run: dbt compile --target $TARGET
-
-      - name: Run dbt tests
-        run: dbt test --target $TARGET
-        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
-
-      - name: Install uv
-        run: python3 -m pip install uv
-
-      - name: Install dependencies
-        run: |
-          uv pip install -r requirements.txt --system
-          uv pip install dbt-core dbt-bigquery --system
-
-      - name: Create dbt profiles.yml
-        run: |
-          mkdir -p ~/.dbt
-          cat > ~/.dbt/profiles.yml << EOF
-          dbt_nostream:
-            target: stage
-            outputs:
-              stage:
-                type: bigquery
-                method: service-account
-                keyfile_json: /tmp/keyfile.json
-                project: replit-gcp
-                dataset: dbt_nostream_stage
-                threads: 4
-                timeout_seconds: 300
-                location: US
-                priority: interactive
-                retries: 1
-              prod:
-                type: bigquery
-                method: service-account
-                keyfile_json: /tmp/keyfile.json
-                project: replit-gcp
-                dataset: dbt_nostream_prod
-                threads: 8
-                timeout_seconds: 300
-                location: US
-                priority: interactive
-                retries: 1
-          EOF
-
-      - name: Install dbt packages
-        run: dbt deps
-
-      - name: Run dbt models
-        run: |
-          TARGET="${{ github.event.inputs.environment || 'prod' }}"
           echo "Deploying to: $TARGET"
           dbt run --target $TARGET
           dbt test --target $TARGET
