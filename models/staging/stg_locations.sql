@@ -1,29 +1,10 @@
-with
+-- Placeholder staging model for locations
+-- Remove this file if you don't have location data
 
-source as (
+{{ config(materialized='view') }}
 
-    select * from {{ source('ecom', 'raw_stores') }}
+select
+    1 as location_id,
+    'placeholder' as location_name
 
-),
-
-renamed as (
-
-    select
-
-        ----------  ids
-        id as location_id,
-
-        ---------- text
-        name as location_name,
-
-        ---------- numerics
-        tax_rate,
-
-        ---------- timestamps
-        {{ dbt.date_trunc('day', 'opened_at') }} as opened_date
-
-    from source
-
-)
-
-select * from renamed
+-- Delete this file if not needed for your project

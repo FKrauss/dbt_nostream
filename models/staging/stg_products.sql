@@ -1,34 +1,10 @@
-with
+-- Placeholder staging model for products
+-- Remove this file if you don't have product data
 
-source as (
+{{ config(materialized='view') }}
 
-    select * from {{ source('ecom', 'raw_products') }}
+select
+    1 as product_id,
+    'placeholder' as product_name
 
-),
-
-renamed as (
-
-    select
-
-        ----------  ids
-        sku as product_id,
-
-        ---------- text
-        name as product_name,
-        type as product_type,
-        description as product_description,
-
-
-        ---------- numerics
-        {{ cents_to_dollars('price') }} as product_price,
-
-        ---------- booleans
-        coalesce(type = 'jaffle', false) as is_food_item,
-
-        coalesce(type = 'beverage', false) as is_drink_item
-
-    from source
-
-)
-
-select * from renamed
+-- Delete this file if not needed for your project

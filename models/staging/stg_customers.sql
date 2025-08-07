@@ -1,23 +1,11 @@
-with
 
-source as (
+-- Placeholder staging model for customers
+-- Replace with your actual customer staging logic
 
-    select * from {{ source('ecom', 'raw_customers') }}
+{{ config(materialized='view') }}
 
-),
-
-renamed as (
-
-    select
-
-        ----------  ids
-        id as customer_id,
-
-        ---------- text
-        name as customer_name
-
-    from source
-
-)
-
-select * from renamed
+select
+    1 as customer_id,
+    'placeholder' as customer_name
+    
+-- Remove this file if you don't have customer data
