@@ -1,4 +1,3 @@
-
 SELECT
   MIN(Timestamp) AS first_seen_at,
   ANY_VALUE(topic) AS topic,
