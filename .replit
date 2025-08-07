@@ -1,6 +1,6 @@
 [nix]
 channel = "stable-25_05"
-packages = ["dbt", "python312Packages.dbt-bigquery"]
+packages = ["cacert", "dbt", "libyaml", "python312Packages.dbt-bigquery", "which"]
 
 [workflows]
 runButton = "Build Project"
