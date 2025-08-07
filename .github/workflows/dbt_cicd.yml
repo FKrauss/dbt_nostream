@@ -1,4 +1,3 @@
-
 name: dbt CI/CD
 
 on:
@@ -49,15 +48,15 @@ jobs:
         run: |
           mkdir -p ~/.dbt
           cat > ~/.dbt/profiles.yml << EOF
-          jaffle_shop:
+          dbt_nostream:
             target: staging
             outputs:
               staging:
                 type: bigquery
                 method: service-account
                 keyfile: /tmp/keyfile.json
-                project: ${{ secrets.DBT_BIGQUERY_PROJECT }}
-                dataset: jaffle_shop_staging
+                project: replit-gcp
+                dataset: dbt_nostream_stage
                 threads: 4
                 timeout_seconds: 300
                 location: US
@@ -67,8 +66,8 @@ jobs:
                 type: bigquery
                 method: service-account
                 keyfile: /tmp/keyfile.json
-                project: ${{ secrets.DBT_BIGQUERY_PROJECT }}
-                dataset: jaffle_shop_prod
+                project: replit-gcp
+                dataset: dbt_nostream_prod
                 threads: 8
                 timeout_seconds: 300
                 location: US
@@ -121,15 +120,15 @@ jobs:
         run: |
           mkdir -p ~/.dbt
           cat > ~/.dbt/profiles.yml << EOF
-          jaffle_shop:
+          dbt_nostream:
             target: staging
             outputs:
               staging:
                 type: bigquery
                 method: service-account
                 keyfile: /tmp/keyfile.json
-                project: ${{ secrets.DBT_BIGQUERY_PROJECT }}
-                dataset: jaffle_shop_staging
+                project: replit-gcp
+                dataset: dbt_nostream_stage
                 threads: 4
                 timeout_seconds: 300
                 location: US
@@ -139,8 +138,8 @@ jobs:
                 type: bigquery
                 method: service-account
                 keyfile: /tmp/keyfile.json
-                project: ${{ secrets.DBT_BIGQUERY_PROJECT }}
-                dataset: jaffle_shop_prod
+                project: replit-gcp
+                dataset: dbt_nostream_prod
                 threads: 8
                 timeout_seconds: 300
                 location: US
