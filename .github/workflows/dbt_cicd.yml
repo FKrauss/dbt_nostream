@@ -59,7 +59,7 @@ jobs:
               stage:
                 type: bigquery
                 method: service-account
-                keyfile: /tmp/keyfile.json
+                keyfile_json: "{{ env_var('GCP_SERVICE_ACCOUNT_CREDENTIALS') }}"
                 project: replit-gcp
                 dataset: dbt_nostream_stage
                 threads: 4
@@ -70,7 +70,7 @@ jobs:
               prod:
                 type: bigquery
                 method: service-account
-                keyfile: /tmp/keyfile.json
+                keyfile_json: "{{ env_var('GCP_SERVICE_ACCOUNT_CREDENTIALS') }}"
                 project: replit-gcp
                 dataset: dbt_nostream_prod
                 threads: 8
@@ -83,12 +83,20 @@ jobs:
       - name: Install dbt packages
         run: dbt deps
 
+      - name: Debug profiles
+        run: |
+          echo "Checking profiles.yml:"
+          cat ~/.dbt/profiles.yml
+          echo "Checking environment variables:"
+          echo "GCP_SERVICE_ACCOUNT_CREDENTIALS is set: $([ -n "$GCP_SERVICE_ACCOUNT_CREDENTIALS" ] && echo "YES" || echo "NO")"
+
       - name: Run dbt models
         run: |
           TARGET="${{ github.event.inputs.environment }}"
-          if [ -z "$TARGET" ]; then
+          if [ -z "$TARGET" ] || [ "$TARGET" = "" ]; then
             TARGET="prod"
           fi
           echo "Deploying to: $TARGET"
+          echo "Using target: $TARGET"
           dbt run --target $TARGET
           dbt test --target $TARGET
