@@ -10,10 +10,10 @@ on:
       environment:
         description: 'Environment to deploy to'
         required: true
-        default: 'staging'
+        default: 'stage'
         type: choice
         options:
-          - staging
+          - stage
           - prod
 
 env:
