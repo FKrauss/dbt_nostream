@@ -1,0 +1,154 @@
+name: dbt CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - prod
+
+env:
+  DBT_BIGQUERY_PROJECT: ${{ secrets.DBT_BIGQUERY_PROJECT }}
+  DBT_BIGQUERY_KEYFILE: /tmp/keyfile.json
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install dbt-core dbt-bigquery
+
+      - name: Setup BigQuery credentials
+        run: |
+          echo '${{ secrets.GCP_SERVICE_ACCOUNT_CREDENTIALS }}' > /tmp/keyfile.json
+
+      - name: Create dbt profiles.yml
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml << EOF
+          burd:
+            target: staging
+            outputs:
+              staging:
+                type: bigquery
+                method: service-account
+                keyfile: /tmp/keyfile.json
+                project: ${{ secrets.DBT_BIGQUERY_PROJECT }}
+                dataset: burd_dbt_stage
+                threads: 4
+                timeout_seconds: 300
+                location: EU
+                priority: interactive
+                retries: 1
+              prod:
+                type: bigquery
+                method: service-account
+                keyfile: /tmp/keyfile.json
+                project: ${{ secrets.DBT_BIGQUERY_PROJECT }}
+                dataset: burd_dbt_prod
+                threads: 8
+                timeout_seconds: 300
+                location: EU
+                priority: interactive
+                retries: 1
+          EOF
+
+      - name: Install dbt packages
+        run: dbt deps
+
+      - name: Set environment for testing
+        run: |
+          TARGET="${{ github.event.inputs.environment || 'staging' }}"
+          echo "Testing against: $TARGET"
+          echo "TARGET_ENV=$TARGET" >> $GITHUB_ENV
+
+      - name: Test dbt compilation
+        run: dbt compile --target $TARGET_ENV
+
+      - name: Run dbt tests
+        run: dbt test --target $TARGET_ENV
+        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install dbt-core dbt-bigquery
+
+      - name: Setup BigQuery credentials
+        run: |
+          echo '${{ secrets.GCP_SERVICE_ACCOUNT_CREDENTIALS }}' > /tmp/keyfile.json
+
+      - name: Create dbt profiles.yml
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml << EOF
+          burd:
+            target: staging
+            outputs:
+              staging:
+                type: bigquery
+                method: service-account
+                keyfile: /tmp/keyfile.json
+                project: ${{ secrets.DBT_BIGQUERY_PROJECT }}
+                dataset: burd_dbt_stage
+                threads: 4
+                timeout_seconds: 300
+                location: EU
+                priority: interactive
+                retries: 1
+              prod:
+                type: bigquery
+                method: service-account
+                keyfile: /tmp/keyfile.json
+                project: ${{ secrets.DBT_BIGQUERY_PROJECT }}
+                dataset: burd_dbt_prod
+                threads: 8
+                timeout_seconds: 300
+                location: EU
+                priority: interactive
+                retries: 1
+          EOF
+
+      - name: Install dbt packages
+        run: dbt deps
+
+      - name: Run dbt models
+        run: |
+          TARGET="${{ github.event.inputs.environment || 'prod' }}"
+          echo "Deploying to: $TARGET"
+          dbt run --target $TARGET
+          dbt test --target $TARGET 
