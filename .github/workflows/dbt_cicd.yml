@@ -23,6 +23,10 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+    
+    env:
+      GCP_SERVICE_ACCOUNT_CREDENTIALS: ${{ secrets.GCP_SERVICE_ACCOUNT_CREDENTIALS }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -114,10 +118,6 @@ jobs:
           uv pip install -r requirements.txt --system
           uv pip install dbt-core dbt-bigquery --system
 
-      - name: Setup BigQuery credentials
-        run: |
-          echo '${{ secrets.GCP_SERVICE_ACCOUNT_CREDENTIALS }}' > /tmp/keyfile.json
-
       - name: Create dbt profiles.yml
         run: |
           mkdir -p ~/.dbt
@@ -128,7 +128,7 @@ jobs:
               stage:
                 type: bigquery
                 method: service-account
-                keyfile: /tmp/keyfile.json
+                keyfile_json: /tmp/keyfile.json
                 project: replit-gcp
                 dataset: dbt_nostream_stage
                 threads: 4
@@ -139,7 +139,7 @@ jobs:
               prod:
                 type: bigquery
                 method: service-account
-                keyfile: /tmp/keyfile.json
+                keyfile_json: /tmp/keyfile.json
                 project: replit-gcp
                 dataset: dbt_nostream_prod
                 threads: 8
