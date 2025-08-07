@@ -1,11 +1,12 @@
-SELECT
-  MIN(Timestamp) AS first_seen_at,
-  ANY_VALUE(topic) AS topic,
-  JSON_VALUE(Payload, '$.id') AS event_id,
-  ANY_VALUE(Payload) AS Payload
-FROM `replit-gcp.Nostr.events`
-WHERE
-  topic IS NOT NULL
-  AND JSON_VALUE(Payload, '$.id') IS NOT NULL
-  AND _PARTITIONTIME >= TIMESTAMP("2025-07-01")  -- or dynamic range
-GROUP BY event_id
+
+select
+  min(timestamp) as first_seen_at,
+  any_value(topic) as topic,
+  json_value(payload, '$.id') as event_id,
+  any_value(payload) as payload
+from `replit-gcp.nostr.events`
+where
+  topic is not null
+  and json_value(payload, '$.id') is not null
+  and _partitiontime >= timestamp("2025-07-01")  -- or dynamic range
+group by event_id
