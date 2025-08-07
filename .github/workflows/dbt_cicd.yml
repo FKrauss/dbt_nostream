@@ -49,9 +49,9 @@ jobs:
           mkdir -p ~/.dbt
           cat > ~/.dbt/profiles.yml << EOF
           dbt_nostream:
-            target: staging
+            target: stage
             outputs:
-              staging:
+              stage:
                 type: bigquery
                 method: service-account
                 keyfile: /tmp/keyfile.json
@@ -121,9 +121,9 @@ jobs:
           mkdir -p ~/.dbt
           cat > ~/.dbt/profiles.yml << EOF
           dbt_nostream:
-            target: staging
+            target: stage
             outputs:
-              staging:
+              stage:
                 type: bigquery
                 method: service-account
                 keyfile: /tmp/keyfile.json
