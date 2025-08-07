@@ -1,0 +1,19 @@
+
+version: 2
+
+models:
+  - name: nostream_raw_dedupped
+    description: "Deduplicated Nostr events from the raw events table, showing the first occurrence of each unique event ID"
+    columns:
+      - name: first_seen_at
+        description: "The earliest timestamp when this event was first observed"
+        tests:
+          - not_null
+      - name: topic
+        description: "The topic/channel associated with the Nostr event"
+        tests:
+          - not_null
+      - name: event_id
+        description: "Unique identifier for the Nostr event, extracted from the JSON payload"
+      - name: payload
+        description: "Complete JSON payload of the Nostr event containing all event data"
