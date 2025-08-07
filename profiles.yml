@@ -1,5 +1,5 @@
 dbt_nostream:
-  target: stage
+  target: staging
   outputs:
     stage:
       type: bigquery
