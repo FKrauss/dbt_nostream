@@ -51,8 +51,7 @@ jobs:
 
       - name: Create dbt profiles.yml
         run: |
-          mkdir -p ~/.dbt
-          cat > ~/.dbt/profiles.yml << EOF
+          cat > profiles.yml << EOF
           dbt_nostream:
             target: stage
             outputs:
@@ -86,7 +85,7 @@ jobs:
       - name: Debug profiles
         run: |
           echo "Checking profiles.yml:"
-          cat ~/.dbt/profiles.yml
+          cat profiles.yml
           echo "Checking environment variables:"
           echo "GCP_SERVICE_ACCOUNT_CREDENTIALS is set: $([ -n "$GCP_SERVICE_ACCOUNT_CREDENTIALS" ] && echo "YES" || echo "NO")"
 
