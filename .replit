@@ -1,9 +1,9 @@
 [nix]
 channel = "stable-25_05"
-packages = ["cacert", "dbt", "libyaml", "python312Packages.dbt-bigquery@1.9.1", "which"]
+packages = ["cacert", "git", "which"]
 
 [workflows]
-runButton = "Build Project"
+runButton = "Push to GitHub"
 
 [[workflows.workflow]]
 name = "Build Project"
@@ -17,3 +17,20 @@ args = "dbt seed --full-refresh --vars '{\"load_source_data\": true}'"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "dbt build"
+
+[[workflows.workflow]]
+name = "Push to GitHub"
+author = 38059905
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "git add ."
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "git status"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"Ready to commit and push to GitHub!\""
