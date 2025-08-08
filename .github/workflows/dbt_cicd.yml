@@ -94,7 +94,7 @@ jobs:
         run: |
           TARGET="${{ github.event.inputs.environment }}"
           if [ -z "$TARGET" ] || [ "$TARGET" = "" ]; then
-            TARGET="prod"
+            TARGET="stage"
           fi
           echo "Deploying to: $TARGET"
           echo "Using target: $TARGET"
