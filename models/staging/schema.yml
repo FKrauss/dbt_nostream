@@ -1,3 +1,58 @@
 
 version: 2
 
+<<<<<<< HEAD
+=======
+models:
+  - name: stg_nostr_events_all
+    description: "Staging model for all Nostr events with extracted JSON fields and enriched kind metadata"
+    columns:
+      - name: author_npub
+        description: "Public key of the event creator"
+        tests:
+          - not_null
+      - name: content
+        description: "Content of the Nostr event"
+      - name: created_at
+        description: "Timestamp when the event was created"
+        tests:
+          - not_null
+      - name: id
+        description: "Unique identifier for the Nostr event"
+        tests:
+          - not_null
+          - unique
+      - name: kind
+        description: "Type of Nostr event (cast as integer for easy joining)"
+        tests:
+          - not_null
+      - name: npub
+        description: "Bech32 encoded public key"
+      - name: relayUrl
+        description: "URL of the relay where the event was published"
+      - name: sig
+        description: "Cryptographic signature of the event"
+      - name: tags
+        description: "Array of tags associated with the event"
+      - name: kind_name
+        description: "Human-readable name for the event kind (from kind metadata)"
+      - name: kind_description
+        description: "Detailed description of what this event kind represents"
+      - name: kind_defined_in
+        description: "NIP where this kind was defined"
+
+    description: "Deduplicated Nostr events from the raw events table, showing the first occurrence of each unique event ID"
+    columns:
+      - name: first_seen_at
+        description: "The earliest timestamp when this event was first observed"
+        tests:
+          - not_null
+      - name: topic
+        description: "The topic/channel associated with the Nostr event"
+        tests:
+          - not_null
+      - name: event_id
+        description: "Unique identifier for the Nostr event, extracted from the JSON payload"
+      - name: payload
+        description: "Complete JSON payload of the Nostr event containing all event data"
+>>>>>>> 1493146 (cleaned up and added a simpler view)

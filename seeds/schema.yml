@@ -1,0 +1,21 @@
+version: 2
+
+seeds:
+  - name: kind_meta_view
+    description: "View of Nostr event kind metadata with proper data types for easy merging"
+    config:
+      materialized: view
+    columns:
+      - name: kind
+        description: "Nostr event kind identifier, cast as integer for easy merging"
+        tests:
+          - not_null
+          - unique
+      - name: name
+        description: "Human-readable name for the event kind"
+        tests:
+          - not_null
+      - name: description
+        description: "Detailed description of what this event kind represents"
+      - name: defined_in
+        description: "NIP (Nostr Implementation Possibility) where this kind was defined"
