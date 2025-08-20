@@ -12,4 +12,4 @@ SELECT
   km.name as kind_name
 
 FROM `replit-gcp.Nostr.events` e
-LEFT JOIN `replit-gcp.Nostr.seed_kind_meta` km ON CAST(JSON_VALUE(e.payload, '$.kind') AS INT64) = km.kind
+LEFT JOIN `replit-gcp.Nostr.seed_kind_meta` km ON CAST(JSON_VALUE(e.payload, '$.kind') AS INT64) = CAST(km.kind AS INT64)
