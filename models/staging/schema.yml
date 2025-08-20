@@ -1,8 +1,6 @@
 
 version: 2
 
-<<<<<<< HEAD
-=======
 models:
   - name: stg_nostr_events_all
     description: "Staging model for all Nostr events with extracted JSON fields and enriched kind metadata"
