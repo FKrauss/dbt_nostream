@@ -1,6 +1,6 @@
 
 SELECT   
-  JSON_VALUE(payload, '$.author')        AS author,
+  JSON_VALUE(payload, '$.author')        AS author_npub,
   JSON_VALUE(payload, '$.content')       AS content,
   TIMESTAMP(JSON_VALUE(payload, '$.createdAt')) AS created_at,
   JSON_VALUE(payload, '$.id')            AS id,
