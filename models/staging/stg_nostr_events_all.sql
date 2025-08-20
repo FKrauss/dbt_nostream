@@ -8,8 +8,6 @@ SELECT
   JSON_VALUE(payload, '$.npub')          AS npub,
   JSON_VALUE(payload, '$.relayUrl')      AS relayUrl,
   JSON_VALUE(payload, '$.sig')           AS sig,
-  JSON_EXTRACT_ARRAY(JSON_VALUE(payload, '$.tags'), '$') AS tags,
-  km.name as kind_name
+  JSON_EXTRACT_ARRAY(JSON_VALUE(payload, '$.tags'), '$') AS tags
 
 FROM `replit-gcp.Nostr.events` e
-LEFT JOIN `replit-gcp.Nostr.seed_kind_meta` km ON CAST(JSON_VALUE(e.payload, '$.kind') AS INT64) = CAST(km.kind AS INT64)
