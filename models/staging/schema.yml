@@ -26,8 +26,4 @@ models:
       - name: tags
         description: "Array of tags associated with the event"
       - name: kind_name
-        description: "Human-readable name for the event kind (from kind metadata)"
-      - name: kind_description
-        description: "Detailed description of what this event kind represents"
-      - name: kind_defined_in
-        description: "NIP where this kind was defined"
+        description: "Human-readable name for the event kind (from external kind metadata table)"
