@@ -12,28 +12,27 @@ with latest as (
   select * from {{ ref('int_state_contact_list_latest') }}
 ),
 
--- turn tags JSON into one row per tag
 tag_rows as (
   select
-    npub as follower_npub,
+    author_npub as follower_npub,
     event_id,
     created_at,
-    t as tag_json
+    tag_str
   from latest
-  cross join unnest( JSON_QUERY_ARRAY(tags) ) as t
+  cross join unnest(tags) as tag_str
 ),
 
--- keep only "p" tags, pull values by index
 p_tags as (
   select
     follower_npub,
     event_id,
     created_at,
-    JSON_VALUE(tag_json, '$[0]') as tag_kind,
-    JSON_VALUE(tag_json, '$[1]') as followed_pubkey_hex,   -- 64‑char hex
-    JSON_VALUE(tag_json, '$[2]') as relay_hint             -- optional relay hint
+    JSON_VALUE(tag_str, '$[0]') as tag_kind,              -- e.g. 'p'
+    JSON_VALUE(tag_str, '$[1]') as followed_pubkey_hex,   -- 64-char hex
+    JSON_VALUE(tag_str, '$[2]') as relay_hint             -- optional
   from tag_rows
-  where JSON_VALUE(tag_json, '$[0]') = 'p'
+  -- keep only well-formed "p" tags
+  where JSON_VALUE(tag_str, '$[0]') = 'p'
 )
 
 select
