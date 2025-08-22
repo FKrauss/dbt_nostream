@@ -10,19 +10,24 @@ on:
       environment:
         description: 'Environment to deploy to'
         required: true
-        default: 'staging'
+        default: 'stage'
         type: choice
         options:
-          - staging
+          - stage
           - prod
 
 env:
-  DBT_BIGQUERY_PROJECT: ${{ secrets.DBT_BIGQUERY_PROJECT }}
+  DBT_BIGQUERY_PROJECT: replit-gcp
   DBT_BIGQUERY_KEYFILE: /tmp/keyfile.json
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    env:
+      GCP_SERVICE_ACCOUNT_CREDENTIALS: ${{ secrets.GCP_SERVICE_ACCOUNT_CREDENTIALS }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -46,12 +51,11 @@ jobs:
 
       - name: Create dbt profiles.yml
         run: |
-          mkdir -p ~/.dbt
-          cat > ~/.dbt/profiles.yml << EOF
+          cat > profiles.yml << EOF
           dbt_nostream:
-            target: staging
+            target: stage
             outputs:
-              staging:
+              stage:
                 type: bigquery
                 method: service-account
                 keyfile: /tmp/keyfile.json
@@ -78,23 +82,27 @@ jobs:
       - name: Install dbt packages
         run: dbt deps
 
-      - name: Set environment for testing
+      - name: Debug profiles
         run: |
-          TARGET="${{ github.event.inputs.environment || 'staging' }}"
-          echo "Testing against: $TARGET"
-          echo "TARGET_ENV=$TARGET" >> $GITHUB_ENV
+          echo "Checking profiles.yml structure:"
+          head -10 profiles.yml
+          echo "Checking environment variables:"
+          echo "GCP_SERVICE_ACCOUNT_CREDENTIALS is set: $([ -n "$GCP_SERVICE_ACCOUNT_CREDENTIALS" ] && echo "YES" || echo "NO")"
+          echo "Profiles.yml file exists: $([ -f profiles.yml ] && echo "YES" || echo "NO")"
 
-      - name: Test dbt compilation
-        run: dbt compile --target $TARGET_ENV
-
-      - name: Run dbt tests
-        run: dbt test --target $TARGET_ENV
-        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+      - name: Test dbt models
+        run: |
+          echo "Testing models on PR..."
+          dbt run --target test
+          dbt test --target test
 
   deploy:
     runs-on: ubuntu-latest
-    needs: test
     if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+
+    env:
+      GCP_SERVICE_ACCOUNT_CREDENTIALS: ${{ secrets.GCP_SERVICE_ACCOUNT_CREDENTIALS }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -118,12 +126,11 @@ jobs:
 
       - name: Create dbt profiles.yml
         run: |
-          mkdir -p ~/.dbt
-          cat > ~/.dbt/profiles.yml << EOF
+          cat > profiles.yml << EOF
           dbt_nostream:
-            target: staging
+            target: stage
             outputs:
-              staging:
+              stage:
                 type: bigquery
                 method: service-account
                 keyfile: /tmp/keyfile.json
@@ -150,9 +157,21 @@ jobs:
       - name: Install dbt packages
         run: dbt deps
 
+      - name: Debug profiles
+        run: |
+          echo "Checking profiles.yml structure:"
+          head -10 profiles.yml
+          echo "Checking environment variables:"
+          echo "GCP_SERVICE_ACCOUNT_CREDENTIALS is set: $([ -n "$GCP_SERVICE_ACCOUNT_CREDENTIALS" ] && echo "YES" || echo "NO")"
+          echo "Profiles.yml file exists: $([ -f profiles.yml ] && echo "YES" || echo "NO")"
+
       - name: Run dbt models
         run: |
-          TARGET="${{ github.event.inputs.environment || 'prod' }}"
+          TARGET="${{ github.event.inputs.environment }}"
+          if [ -z "$TARGET" ] || [ "$TARGET" = "" ]; then
+            TARGET="stage"
+          fi
           echo "Deploying to: $TARGET"
+          echo "Using target: $TARGET"
           dbt run --target $TARGET
           dbt test --target $TARGET

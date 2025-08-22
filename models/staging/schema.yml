@@ -1,0 +1,29 @@
+
+version: 2
+
+models:
+  - name: stg_nostr_events_all
+    description: "Staging model for all Nostr events with extracted JSON fields and enriched kind metadata"
+    columns:
+      - name: author_npub
+        description: "Public key of the event creator"
+        tests:
+          - not_null
+      - name: content
+        description: "Content of the Nostr event"
+      - name: created_at
+        description: "Timestamp when the event was created"
+      - name: id
+        description: "Unique identifier for the Nostr event"
+      - name: kind
+        description: "Type of Nostr event (cast as integer for easy joining)"
+      - name: npub
+        description: "Bech32 encoded public key"
+      - name: relayUrl
+        description: "URL of the relay where the event was published"
+      - name: sig
+        description: "Cryptographic signature of the event"
+      - name: tags
+        description: "Array of tags associated with the event"
+      - name: kind_name
+        description: "Human-readable name for the event kind (from external kind metadata table)"

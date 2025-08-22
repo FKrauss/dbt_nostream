@@ -1,0 +1,4 @@
+version: 2
+
+# This file is intentionally empty as we're using external BigQuery tables
+# instead of dbt seeds for the kind metadata

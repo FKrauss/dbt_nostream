@@ -1,0 +1,47 @@
+dbt_nostream:
+  target: stage
+  outputs:
+    stage:
+      type: bigquery
+      method: service-account
+      keyfile: /Users/fabio.k.s/github/GCP-keys/replit-gcp-676304e46637.json
+      project: replit-gcp
+      dataset: dbt_nostream_stage
+      threads: 4
+      timeout_seconds: 300
+      location: US
+      priority: interactive
+
+    prod:
+      type: bigquery
+      method: service-account
+      keyfile: /Users/fabio.k.s/github/GCP-keys/replit-gcp-676304e46637.json
+      project: replit-gcp
+      dataset: dbt_nostream_prod
+      threads: 4
+      timeout_seconds: 300
+      location: US
+      priority: interactive
+
+    test:
+      type: bigquery
+      method: service-account
+      keyfile: /Users/fabio.k.s/github/GCP-keys/replit-gcp-676304e46637.json
+      project: replit-gcp
+      dataset: dbt_nostream_test
+      threads: 4
+      timeout_seconds: 300
+      location: US
+      priority: interactive
+
+    # Local development profile using keyfile
+    local:
+      type: bigquery
+      method: service-account
+      keyfile: ~/.gcp/service-account-key.json  # You'll need to create this file
+      project: replit-gcp
+      dataset: dbt_nostream_stage
+      threads: 4
+      timeout_seconds: 300
+      location: US
+      priority: interactive
