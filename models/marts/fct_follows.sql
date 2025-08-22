@@ -14,7 +14,7 @@ with latest as (
 
 tag_rows as (
   select
-    author_npub as follower_npub,
+    npub,
     event_id,
     created_at,
     tag_str
@@ -24,7 +24,7 @@ tag_rows as (
 
 p_tags as (
   select
-    follower_npub,
+    npub,
     event_id,
     created_at,
     JSON_VALUE(tag_str, '$[0]') as tag_kind,              -- e.g. 'p'
@@ -36,7 +36,7 @@ p_tags as (
 )
 
 select
-  follower_npub,
+  npub,
   followed_pubkey_hex,
   relay_hint,
   event_id as source_event_id,
