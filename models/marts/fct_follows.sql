@@ -1,13 +1,4 @@
 
--- models/marts/fct_follows.sql
-{{ 
-  config(
-    materialized='table',
-    partition_by = {'field': 'created_date', 'data_type': 'date'},
-    cluster_by = ['follower_npub', 'followed_pubkey_hex']
-  ) 
-}}
-
 with latest as (
   select * from {{ ref('int_state_contact_list_latest') }}
 ),
