@@ -9,7 +9,7 @@
 }}
 
 with latest as (
-  select * from {{ ref('int_contact_list_latest') }}
+  select * from {{ ref('int_state_contact_list_latest') }}
 ),
 
 -- turn tags JSON into one row per tag
