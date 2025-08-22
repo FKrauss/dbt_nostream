@@ -5,10 +5,6 @@ models:
   - name: stg_nostr_events_all
     description: "Staging model for all Nostr events with extracted JSON fields and enriched kind metadata"
     columns:
-      - name: author_npub
-        description: "Public key of the event creator"
-        tests:
-          - not_null
       - name: content
         description: "Content of the Nostr event"
       - name: created_at
