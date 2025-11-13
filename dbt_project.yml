@@ -8,6 +8,12 @@ require-dbt-version: ">=1.5.0"
 profile: dbt_nostream
 
 model-paths: ["models"]
+
+vars:
+  source_project: "replit-gcp"
+  source_dataset: "Nostr"
+  "dbt_date:time_zone": "America/Los_Angeles"
+
 seed-paths: ["seeds"]
 macro-paths: ["macros"]
 
@@ -15,9 +21,6 @@ target-path: "target"
 clean-targets:
   - "target"
   - "dbt_packages"
-
-vars:
-  "dbt_date:time_zone": "America/Los_Angeles"
 
 seeds:
   dbt_nostream:
