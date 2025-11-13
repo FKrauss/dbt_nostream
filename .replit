@@ -39,5 +39,31 @@ args = "git commit -m \"Update from Replit\""
 task = "shell.exec"
 args = "git push origin main"
 
+[[workflows.workflow]]
+name = "DBT Dev - Run Models"
+author = 38059905
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "dbt deps"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "dbt run --target dev"
+
+[[workflows.workflow]]
+name = "DBT Dev - Test Only"
+author = 38059905
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "dbt deps"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "dbt test --target dev"
+
 [agent]
 expertMode = true
