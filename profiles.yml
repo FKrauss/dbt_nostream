@@ -69,3 +69,50 @@ dbt_nostream:
       project: replit-gcp
       dataset: dbt_nostream_prod
       threads: 8
+dbt_nostream:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      keyfile: /tmp/gcp_credentials.json
+      project: replit-gcp
+      dataset: dbt_nostream_dev
+      threads: 4
+      timeout_seconds: 300
+      location: US
+      priority: interactive
+      retries: 1
+    test:
+      type: bigquery
+      method: service-account
+      keyfile: /tmp/gcp_credentials.json
+      project: replit-gcp
+      dataset: dbt_nostream_test
+      threads: 4
+      timeout_seconds: 300
+      location: US
+      priority: interactive
+      retries: 1
+    stage:
+      type: bigquery
+      method: service-account
+      keyfile: /tmp/gcp_credentials.json
+      project: replit-gcp
+      dataset: dbt_nostream_stage
+      threads: 4
+      timeout_seconds: 300
+      location: US
+      priority: interactive
+      retries: 1
+    prod:
+      type: bigquery
+      method: service-account
+      keyfile: /tmp/gcp_credentials.json
+      project: replit-gcp
+      dataset: dbt_nostream_prod
+      threads: 8
+      timeout_seconds: 300
+      location: US
+      priority: interactive
+      retries: 1
