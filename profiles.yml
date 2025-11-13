@@ -51,7 +51,7 @@ dbt_nostream:
     dev:
       type: bigquery
       method: service-account-json
-      keyfile_json: "{{ env_var('GCP_SERVICE_ACCOUNT_CREDENTIALS') }}"
+      keyfile_json: "{{ env_var('bigquery_json') }}"
       project: replit-gcp
       dataset: dbt_nostream_dev
       threads: 4
@@ -62,7 +62,7 @@ dbt_nostream:
     stage:
       type: bigquery
       method: service-account-json
-      keyfile_json: "{{ env_var('GCP_SERVICE_ACCOUNT_CREDENTIALS') }}"
+      keyfile_json: "{{ env_var('bigquery_json') }}"
       project: replit-gcp
       dataset: dbt_nostream_stage
       threads: 4
@@ -73,7 +73,7 @@ dbt_nostream:
     prod:
       type: bigquery
       method: service-account-json
-      keyfile_json: "{{ env_var('GCP_SERVICE_ACCOUNT_CREDENTIALS') }}"
+      keyfile_json: "{{ env_var('bigquery_json') }}"
       project: replit-gcp
       dataset: dbt_nostream_prod
       threads: 8
