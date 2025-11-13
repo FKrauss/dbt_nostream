@@ -38,3 +38,6 @@ args = "git commit -m \"Update from Replit\""
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "git push origin main"
+
+[agent]
+expertMode = true
