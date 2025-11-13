@@ -8,6 +8,10 @@ require-dbt-version: ">=1.5.0"
 profile: dbt_nostream
 
 model-paths: ["models"]
+
+  source_project: "replit-gcp"
+  source_dataset: "Nostr"
+
 seed-paths: ["seeds"]
 macro-paths: ["macros"]
 

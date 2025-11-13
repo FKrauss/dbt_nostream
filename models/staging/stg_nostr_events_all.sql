@@ -9,4 +9,4 @@ SELECT
   JSON_VALUE(payload, '$.sig')           AS sig,
   JSON_EXTRACT_ARRAY(JSON_VALUE(payload, '$.tags'), '$') AS tags
 
-FROM `replit-gcp.Nostr.events` e
+FROM `{{ var('source_project', 'replit-gcp') }}.{{ var('source_dataset', 'Nostr') }}.events` e
