@@ -1,0 +1,67 @@
+
+version: 2
+
+models:
+  - name: fct_follows
+    description: "Fact table containing follower relationships extracted from kind 3 (contact list) events"
+
+  - name: fct_impersonator_flags
+    description: |
+      Fact table that identifies potential impersonator accounts based on username/description frequency
+      and follower count heuristics. Accounts are flagged when they share common usernames or descriptions
+      with many other accounts but have disproportionately low follower counts.
+      
+      Configurable thresholds (set via dbt_project.yml vars):
+      - username_frequency_threshold: Minimum number of accounts with same username to consider (default: 5)
+      - description_frequency_threshold: Minimum number of accounts with same description to consider (default: 3)
+      - follower_ratio_threshold: Maximum follower ratio compared to max followers for that name/description (default: 0.10 = 10%)
+      
+      Example configurations for different sensitivity levels:
+      
+      Conservative (fewer false positives):
+        vars:
+          username_frequency_threshold: 10
+          description_frequency_threshold: 5
+          follower_ratio_threshold: 0.05
+      
+      Moderate (default):
+        vars:
+          username_frequency_threshold: 5
+          description_frequency_threshold: 3
+          follower_ratio_threshold: 0.10
+      
+      Aggressive (more false positives, catches more potential impersonators):
+        vars:
+          username_frequency_threshold: 3
+          description_frequency_threshold: 2
+          follower_ratio_threshold: 0.20
+
+    columns:
+      - name: npub
+        description: "Bech32 encoded public key"
+      - name: username
+        description: "Username from profile metadata"
+      - name: description
+        description: "Description/bio from profile metadata"
+      - name: follower_count
+        description: "Number of followers this account has"
+      - name: username_frequency
+        description: "Number of accounts using this exact username"
+      - name: description_frequency
+        description: "Number of accounts using this exact description"
+      - name: max_followers_with_username
+        description: "Maximum follower count among all accounts with this username"
+      - name: max_followers_with_description
+        description: "Maximum follower count among all accounts with this description"
+      - name: username_follower_ratio
+        description: "Ratio of this account's followers to max followers for this username (0-1)"
+      - name: description_follower_ratio
+        description: "Ratio of this account's followers to max followers for this description (0-1)"
+      - name: is_username_impersonator
+        description: "Flag indicating if account is flagged as impersonator based on username heuristics"
+      - name: is_description_impersonator
+        description: "Flag indicating if account is flagged as impersonator based on description heuristics"
+      - name: is_potential_impersonator
+        description: "Overall flag indicating if account is flagged by either username or description heuristics"
+      - name: risk_score
+        description: "Calculated risk score (0-1+) based on frequency and follower ratios. Higher = more likely to be impersonator"

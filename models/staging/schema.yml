@@ -23,3 +23,51 @@ models:
         description: "Array of tags associated with the event"
       - name: kind_name
         description: "Human-readable name for the event kind (from external kind metadata table)"
+
+  - name: int_profile_metadata
+    description: "Intermediate model that parses kind 0 (profile metadata) events to extract username, description, and other profile fields. Keeps only the latest profile per npub."
+    columns:
+      - name: npub
+        description: "Bech32 encoded public key"
+      - name: event_id
+        description: "Event ID of the latest profile update"
+      - name: created_at
+        description: "Timestamp of the latest profile update"
+      - name: username
+        description: "Username from profile metadata (name field)"
+      - name: description
+        description: "Bio/description from profile metadata (about field)"
+      - name: display_name
+        description: "Display name from profile metadata"
+      - name: picture
+        description: "Profile picture URL"
+      - name: nip05
+        description: "NIP-05 identifier (email-like verification)"
+
+  - name: int_follower_counts
+    description: "Intermediate model that aggregates follower counts per npub from the follows fact table"
+    columns:
+      - name: npub_hex
+        description: "Public key in hex format being followed"
+      - name: follower_count
+        description: "Number of unique accounts following this npub"
+
+  - name: int_profile_frequency
+    description: "Intermediate model that calculates how frequently usernames and descriptions appear across profiles, along with the maximum follower count for each"
+    columns:
+      - name: npub
+        description: "Bech32 encoded public key"
+      - name: username
+        description: "Username from profile metadata"
+      - name: description
+        description: "Description from profile metadata"
+      - name: follower_count
+        description: "Number of followers for this npub"
+      - name: username_frequency
+        description: "Number of accounts using this exact username"
+      - name: max_followers_with_username
+        description: "Maximum follower count among all accounts with this username"
+      - name: description_frequency
+        description: "Number of accounts using this exact description"
+      - name: max_followers_with_description
+        description: "Maximum follower count among all accounts with this description"
