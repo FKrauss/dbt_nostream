@@ -1,9 +1,10 @@
+modules = ["python-3.11"]
 [nix]
 channel = "stable-25_05"
-packages = ["cacert", "git", "which"]
+packages = ["cacert", "git", "libyaml", "which"]
 
 [workflows]
-runButton = "Push to GitHub"
+runButton = "Project"
 
 [[workflows.workflow]]
 name = "Build Project"
@@ -64,6 +65,26 @@ args = "dbt deps"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "dbt test --target dev"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "dbt-compile"
+
+[[workflows.workflow]]
+name = "dbt-compile"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "dbt compile --profiles-dir ."
+
+[workflows.workflow.metadata]
+outputType = "console"
 
 [agent]
 expertMode = true

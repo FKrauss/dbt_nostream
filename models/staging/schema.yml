@@ -29,6 +29,8 @@ models:
     columns:
       - name: npub
         description: "Bech32 encoded public key"
+      - name: pubkey_hex
+        description: "Hex encoded public key (for joining with follower data)"
       - name: event_id
         description: "Event ID of the latest profile update"
       - name: created_at

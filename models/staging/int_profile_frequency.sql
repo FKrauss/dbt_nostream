@@ -2,6 +2,7 @@
 with profile_data as (
   select
     npub,
+    pubkey_hex,
     username,
     description
   from {{ ref('int_profile_metadata') }}
@@ -22,7 +23,7 @@ profile_with_followers as (
     coalesce(f.follower_count, 0) as follower_count
   from profile_data p
   left join follower_data f
-    on p.npub = f.npub_hex
+    on p.pubkey_hex = f.npub_hex
 ),
 
 username_stats as (

@@ -1,27 +1,30 @@
 
-with profile_events as (
+with source_events as (
   select
-    npub,
-    content,
-    created_at,
-    id as event_id
-  from {{ ref('stg_nostr_events_all') }}
-  where kind = 0
+    JSON_VALUE(payload, '$.npub') as npub,
+    JSON_VALUE(payload, '$.pubkey') as pubkey_hex,
+    JSON_VALUE(payload, '$.content') as content,
+    TIMESTAMP(JSON_VALUE(payload, '$.createdAt')) as created_at,
+    JSON_VALUE(payload, '$.id') as event_id
+  from `replit-gcp.Nostr.events`
+  where CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 0
 ),
 
 latest_profiles as (
   select
     npub,
+    pubkey_hex,
     content,
     created_at,
     event_id,
-    row_number() over (partition by npub order by created_at desc) as rn
-  from profile_events
+    row_number() over (partition by coalesce(pubkey_hex, npub) order by created_at desc) as rn
+  from source_events
 ),
 
 parsed_profiles as (
   select
     npub,
+    pubkey_hex,
     event_id,
     created_at,
     JSON_VALUE(content, '$.name') as username,
@@ -35,6 +38,7 @@ parsed_profiles as (
 
 select
   npub,
+  pubkey_hex,
   event_id,
   created_at,
   coalesce(username, '') as username,
