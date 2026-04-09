@@ -1,5 +1,5 @@
 dbt_nostream:
-  target: stage
+  target: local
   outputs:
     stage:
       type: bigquery
@@ -38,46 +38,10 @@ dbt_nostream:
     local:
       type: bigquery
       method: service-account
-      keyfile: ~/.gcp/service-account-key.json  # You'll need to create this file
+      keyfile: /root/.openclaw/secrets/bq-keyfile.json
       project: replit-gcp
       dataset: dbt_nostream_stage
       threads: 4
       timeout_seconds: 300
       location: US
       priority: interactive
-dbt_nostream:
-  target: dev
-  outputs:
-    dev:
-      type: bigquery
-      method: service-account-json
-      keyfile_json: "{{ env_var('GCP_SERVICE_ACCOUNT_CREDENTIALS') }}"
-      project: replit-gcp
-      dataset: dbt_nostream_dev
-      threads: 4
-      timeout_seconds: 300
-      location: US
-      priority: interactive
-      retries: 1
-    stage:
-      type: bigquery
-      method: service-account-json
-      keyfile_json: "{{ env_var('GCP_SERVICE_ACCOUNT_CREDENTIALS') }}"
-      project: replit-gcp
-      dataset: dbt_nostream_stage
-      threads: 4
-      timeout_seconds: 300
-      location: US
-      priority: interactive
-      retries: 1
-    prod:
-      type: bigquery
-      method: service-account-json
-      keyfile_json: "{{ env_var('GCP_SERVICE_ACCOUNT_CREDENTIALS') }}"
-      project: replit-gcp
-      dataset: dbt_nostream_prod
-      threads: 8
-      timeout_seconds: 300
-      location: US
-      priority: interactive
-      retries: 1

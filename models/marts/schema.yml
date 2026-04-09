@@ -65,3 +65,94 @@ models:
         description: "Overall flag indicating if account is flagged by either username or description heuristics"
       - name: risk_score
         description: "Calculated risk score (0-1+) based on frequency and follower ratios. Higher = more likely to be impersonator"
+
+  - name: fct_user_activity_metrics
+    description: |
+      Daily activity metrics aggregated per user. Combines multiple event types 
+      (notes, reactions, reposts, zaps, profiles, contact lists) into a single 
+      view for analyzing user engagement and activity patterns over time.
+      
+      Useful for:
+      - Identifying power users and active contributors
+      - Tracking user engagement trends over time
+      - User segmentation and cohort analysis
+      - Calculating user-level KPIs (DAU/WAU/MAU)
+    
+    columns:
+      - name: npub
+        description: "Bech32 encoded public key identifying the user"
+        tests:
+          - not_null
+      - name: activity_date
+        description: "Date when the activity occurred"
+        tests:
+          - not_null
+      - name: notes_published
+        description: "Number of text notes (kind 1) published by the user on this date"
+      - name: reactions_sent
+        description: "Number of reactions (kind 7) sent by the user on this date"
+      - name: reposts_made
+        description: "Number of reposts (kind 6) made by the user on this date"
+      - name: zaps_sent_count
+        description: "Number of zaps (kind 9735) sent by the user on this date"
+      - name: profile_updates
+        description: "Number of profile metadata updates (kind 0) made by the user on this date"
+      - name: contact_list_updates
+        description: "Number of contact list updates (kind 3) made by the user on this date"
+      - name: activity_score
+        description: |
+          Weighted activity score: notes=2pts, reactions=1pt, reposts=3pts, 
+          zaps=5pts, profile/contact updates=1pt each. Higher = more active.
+
+  - name: fct_content_engagement
+    description: |
+      Per-note engagement metrics aggregating reactions, reposts, zaps, and replies.
+      Provides a comprehensive view of how content performs on the network.
+      
+      Useful for:
+      - Identifying trending and viral content
+      - Analyzing content performance patterns
+      - Finding top-performing authors
+      - Content recommendation and discovery
+    
+    columns:
+      - name: note_id
+        description: "Unique event ID of the note"
+        tests:
+          - not_null
+      - name: author_npub
+        description: "Bech32 encoded public key of the note author"
+      - name: author_pubkey
+        description: "Hex encoded public key of the note author"
+      - name: published_at
+        description: "Timestamp when the note was published"
+        tests:
+          - not_null
+      - name: published_date
+        description: "Date when the note was published"
+      - name: content_preview
+        description: "First 280 characters of the note content"
+      - name: reaction_count
+        description: "Total number of reactions (kind 7) on this note"
+      - name: unique_reactors
+        description: "Number of unique users who reacted to this note"
+      - name: repost_count
+        description: "Total number of reposts (kind 6) of this note"
+      - name: unique_reposters
+        description: "Number of unique users who reposted this note"
+      - name: zap_count
+        description: "Total number of zaps (kind 9735) received by this note"
+      - name: unique_zappers
+        description: "Number of unique users who zapped this note"
+      - name: total_zap_msats
+        description: "Total zap amount in millisatoshis received by this note"
+      - name: total_zap_sats
+        description: "Total zap amount in satoshis received by this note"
+      - name: reply_count
+        description: "Number of replies (kind 1 with 'e' tag pointing to this note)"
+      - name: unique_repliers
+        description: "Number of unique users who replied to this note"
+      - name: engagement_score
+        description: |
+          Weighted composite score: reactions=1pt, reposts=3pts, replies=2pts, 
+          zaps=1pt + 0.1pt per 100 sats. Higher = more engaging content.
