@@ -157,3 +157,113 @@ models:
         description: "Number of comment events (kind 1111) referencing this episode"
       - name: unique_interactors
         description: "Unique npubs interacting with this episode"
+
+  - name: stg_live_events
+    description: "Staging model for NIP-53 Live Event metadata (kind 30311). Deduplicated across relays and service-neutral."
+    columns:
+      - name: event_id
+        description: "Unique identifier of the Nostr event"
+      - name: author_pubkey
+        description: "Bech32 encoded public key of the event author"
+      - name: created_at
+        description: "Timestamp when the event was created"
+      - name: content
+        description: "Text content of the event (often empty for 30311)"
+      - name: relay_url
+        description: "URL of the relay where the event was ingested"
+      - name: stream_id
+        description: "Live stream identifier from the d-tag"
+      - name: status
+        description: "Stream status from the status tag (live or ended)"
+      - name: title
+        description: "Stream title"
+      - name: summary
+        description: "Stream description / summary"
+      - name: image_url
+        description: "Cover image URL"
+      - name: thumb_url
+        description: "Thumbnail image URL"
+      - name: alt_url
+        description: "Alternate URL (e.g., zap.stream watch page)"
+      - name: service_url
+        description: "Service API endpoint that published the event"
+      - name: streaming_url
+        description: "Direct media stream URL (e.g., HLS)"
+      - name: starts_unix
+        description: "Stream start time as a Unix timestamp string"
+      - name: ends_unix
+        description: "Stream end time as a Unix timestamp string"
+      - name: goal_pubkey
+        description: "Lightning goal / campaign pubkey"
+      - name: host_pubkey
+        description: "Host pubkey extracted from p-tag with role=host"
+      - name: hashtags
+        description: "Array of hashtag strings from t-tags"
+
+  - name: stg_live_zaps
+    description: "Staging model for zap receipts (kind 9735) targeting live streams. Joins to stg_live_events for stream context."
+    columns:
+      - name: event_id
+        description: "Unique identifier of the zap receipt"
+      - name: zapper_pubkey
+        description: "Bech32 encoded public key of the zapper"
+      - name: created_at
+        description: "Timestamp when the zap receipt was created"
+      - name: relay_url
+        description: "URL of the relay where the event was ingested"
+      - name: zapped_event_id
+        description: "Event ID of the live stream event that was zapped"
+      - name: recipient_pubkey
+        description: "Hex pubkey of the recipient (p tag)"
+      - name: bolt11_invoice
+        description: "Lightning invoice string"
+      - name: amount_msats
+        description: "Zap amount in millisatoshis extracted from the zap request description"
+      - name: stream_id
+        description: "Live stream identifier from the associated 30311 event"
+      - name: stream_title
+        description: "Title of the stream at the time of the zap"
+      - name: stream_host
+        description: "Host pubkey of the stream"
+      - name: stream_service_url
+        description: "Service URL of the stream"
+      - name: stream_status_at_zap
+        description: "Stream status at the time the zap receipt was created"
+
+  - name: int_live_streams
+    description: "Intermediate model: one row per live stream. Latest metadata and rollup counts across all 30311 events."
+    columns:
+      - name: stream_id
+        description: "Live stream identifier from the d-tag"
+      - name: title
+        description: "Latest stream title"
+      - name: summary
+        description: "Latest stream summary"
+      - name: image_url
+        description: "Latest cover image URL"
+      - name: thumb_url
+        description: "Latest thumbnail URL"
+      - name: alt_url
+        description: "Latest alternate watch URL"
+      - name: service_url
+        description: "Service API endpoint that published the event"
+      - name: streaming_url
+        description: "Direct media stream URL"
+      - name: host_pubkey
+        description: "Host pubkey extracted from the latest event's p-tag"
+      - name: goal_pubkey
+        description: "Lightning goal / campaign pubkey"
+      - name: hashtags
+        description: "Hashtags from the latest event"
+      - name: first_seen_at
+        description: "First time this stream was observed"
+      - name: last_seen_at
+        description: "Most recent update for this stream"
+      - name: event_count
+        description: "Total number of 30311 events for this stream"
+      - name: live_event_count
+        description: "Number of events with status=live"
+      - name: ended_event_count
+        description: "Number of events with status=ended"
+      - name: statuses_seen
+        description: "Array of unique statuses observed for this stream"

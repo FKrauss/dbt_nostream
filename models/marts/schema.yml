@@ -258,3 +258,31 @@ models:
         description: "Unit of measurement (percent, count, etc.)"
       - name: sample_values
         description: "Optional sample values for quick reference"
+
+  - name: fct_live_engagement
+    description: "Daily engagement metrics per live stream. Aggregates kind 30311 events and kind 9735 zaps."
+    columns:
+      - name: activity_date
+        description: "Calendar date of the aggregated activity"
+      - name: stream_id
+        description: "Live stream identifier"
+      - name: title
+        description: "Stream title (from int_live_streams)"
+      - name: host_pubkey
+        description: "Host pubkey of the stream"
+      - name: service_url
+        description: "Service URL of the stream"
+      - name: event_count
+        description: "Total 30311 events for this stream on this date"
+      - name: live_count
+        description: "Events with status=live"
+      - name: ended_count
+        description: "Events with status=ended"
+      - name: unique_authors
+        description: "Unique pubkeys publishing 30311 events"
+      - name: zap_count
+        description: "Number of zap receipts targeting this stream"
+      - name: unique_zappers
+        description: "Unique zapper pubkeys"
+      - name: total_zap_sats
+        description: "Total zap amount in satoshis"
