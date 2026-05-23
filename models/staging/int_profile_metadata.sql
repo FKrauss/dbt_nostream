@@ -7,7 +7,8 @@ with source_events as (
     TIMESTAMP(JSON_VALUE(payload, '$.createdAt')) as created_at,
     JSON_VALUE(payload, '$.id') as event_id
   from `replit-gcp.Nostr.events`
-  where CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 0
+  where _PARTITIONDATE >= DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
+    AND CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 0
 ),
 
 latest_profiles as (

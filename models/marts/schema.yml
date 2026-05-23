@@ -178,3 +178,83 @@ models:
         description: "Unique npubs interacting with this content on this date"
       - name: total_events
         description: "Total distinct events (shares + zaps)"
+
+  - name: fct_podcast_show_engagement
+    description: |
+      Daily engagement metrics at the show (podcast) level.
+      Aggregates shares, comments, zaps, and total satoshis sent to each show per day.
+    columns:
+      - name: show_guid
+        description: "Podcast show GUID extracted from podcast:guid i-tag"
+      - name: event_date
+        description: "Date of the aggregated activity"
+      - name: active_episode_count
+        description: "Number of distinct episodes with activity on this date"
+      - name: share_count
+        description: "Number of share events (kind 1)"
+      - name: comment_count
+        description: "Number of comment events (kind 1111)"
+      - name: zap_event_count
+        description: "Number of zap actions from podcast events CTE"
+      - name: unique_interactors
+        description: "Unique npubs interacting with this show on this date"
+      - name: zap_receipt_count
+        description: "Number of zap receipts (kind 9735)"
+      - name: total_zap_sats
+        description: "Total zap amount in satoshis"
+      - name: unique_zappers
+        description: "Unique npubs sending zaps to this show"
+      - name: total_events
+        description: "Total distinct events (shares + comments + zap receipts)"
+
+  - name: fct_podcast_publisher_engagement
+    description: |
+      Daily engagement metrics at the content creator (publisher) level.
+      Aggregates shares, comments, zaps, and satoshis sent to each publisher per day.
+    columns:
+      - name: publisher_guid
+        description: "Content creator GUID extracted from podcast:publisher:guid i-tag"
+      - name: event_date
+        description: "Date of the aggregated activity"
+      - name: active_episode_count
+        description: "Number of distinct episodes with activity on this date"
+      - name: active_show_count
+        description: "Number of distinct shows with activity on this date"
+      - name: share_count
+        description: "Number of share events (kind 1)"
+      - name: comment_count
+        description: "Number of comment events (kind 1111)"
+      - name: zap_event_count
+        description: "Number of zap actions from podcast events CTE"
+      - name: unique_interactors
+        description: "Unique npubs interacting with this publisher on this date"
+      - name: zap_receipt_count
+        description: "Number of zap receipts (kind 9735)"
+      - name: total_zap_sats
+        description: "Total zap amount in satoshis"
+      - name: unique_zappers
+        description: "Unique npubs sending zaps to this publisher"
+      - name: total_events
+        description: "Total distinct events (shares + comments + zap receipts)"
+
+  - name: diag_podcast_data_quality
+    description: |
+      Diagnostic metrics for profiling podcast staging models.
+      Tracks null GUID rates, inferred app distributions, multi-show episodes,
+      zap amount health, and other data quality signals.
+      Designed for manual triage — does not assert correctness.
+    columns:
+      - name: checkpoint
+        description: "Category of diagnostic (e.g., null_guid_rate, inferred_app_distribution)"
+      - name: dimension
+        description: "Specific field or value within the checkpoint"
+      - name: pct
+        description: "Percentage of rows matching the diagnostic condition"
+      - name: numerator
+        description: "Count matching the condition"
+      - name: denominator
+        description: "Total count for the denominator"
+      - name: unit
+        description: "Unit of measurement (percent, count, etc.)"
+      - name: sample_values
+        description: "Optional sample values for quick reference"

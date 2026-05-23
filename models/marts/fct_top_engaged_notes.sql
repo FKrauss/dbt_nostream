@@ -16,7 +16,7 @@ WITH note_events AS (
     JSON_VALUE(payload, '$.content') AS content_preview,
     1 AS note_count
   FROM `replit-gcp.Nostr.events`
-  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
+  WHERE _PARTITIONDATE >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
     AND CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 1
 ),
 
@@ -28,7 +28,7 @@ reactions AS (
     COUNT(DISTINCT JSON_VALUE(payload, '$.author')) AS unique_reactors
   FROM `replit-gcp.Nostr.events`,
   UNNEST(JSON_EXTRACT_ARRAY(JSON_VALUE(payload, '$.tags'))) AS tag
-  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
+  WHERE _PARTITIONDATE >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
     AND CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 7
     AND JSON_VALUE(tag, '$[0]') = 'e'
   GROUP BY target_note_id
@@ -41,7 +41,7 @@ reposts AS (
     COUNT(*) AS repost_count
   FROM `replit-gcp.Nostr.events`,
   UNNEST(JSON_EXTRACT_ARRAY(JSON_VALUE(payload, '$.tags'))) AS tag
-  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
+  WHERE _PARTITIONDATE >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
     AND CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 6
     AND JSON_VALUE(tag, '$[0]') = 'e'
   GROUP BY target_note_id
@@ -54,7 +54,7 @@ zaps AS (
     COUNT(*) AS zap_count
   FROM `replit-gcp.Nostr.events`,
   UNNEST(JSON_EXTRACT_ARRAY(JSON_VALUE(payload, '$.tags'))) AS tag
-  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
+  WHERE _PARTITIONDATE >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
     AND CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 9735
     AND JSON_VALUE(tag, '$[0]') = 'e'
   GROUP BY target_note_id

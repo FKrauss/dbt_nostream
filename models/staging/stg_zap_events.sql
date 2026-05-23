@@ -64,5 +64,5 @@ SELECT
   payload AS raw_payload
 
 FROM `replit-gcp.Nostr.events`
-WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
+WHERE _PARTITIONDATE >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
   AND CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 9735

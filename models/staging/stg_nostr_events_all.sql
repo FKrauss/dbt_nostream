@@ -10,3 +10,4 @@ SELECT
   JSON_EXTRACT_ARRAY(JSON_VALUE(payload, '$.tags'), '$') AS tags
 
 FROM `replit-gcp.Nostr.events` e
+WHERE _PARTITIONDATE >= DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)

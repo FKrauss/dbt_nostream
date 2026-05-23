@@ -22,7 +22,7 @@ WITH contact_list_events AS (
       WHERE JSON_VALUE(tag, '$[0]') = 'p'
     ) AS followed_pubkeys
   FROM `replit-gcp.Nostr.events`
-  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
+  WHERE _PARTITIONDATE >= DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
     AND CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 3
 ),
 

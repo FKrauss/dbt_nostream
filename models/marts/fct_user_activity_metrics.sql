@@ -16,7 +16,7 @@ WITH base_events AS (
     DATE(TIMESTAMP(JSON_VALUE(payload, '$.createdAt'))) AS activity_date,
     CAST(JSON_VALUE(payload, '$.kind') AS INT64) AS kind
   FROM `replit-gcp.Nostr.events`
-  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
+  WHERE _PARTITIONDATE >= DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
 ),
 
 -- Notes published (kind 1)
