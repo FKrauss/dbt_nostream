@@ -154,5 +154,27 @@ models:
         description: "Number of unique users who replied to this note"
       - name: engagement_score
         description: |
-          Weighted composite score: reactions=1pt, reposts=3pts, replies=2pts, 
+          Weighted composite score: reactions=1pt, reposts=3pts, replies=2pts,
           zaps=1pt + 0.1pt per 100 sats. Higher = more engaging content.
+
+  - name: fct_podcast_engagement
+    description: |
+      Daily engagement metrics for podcast episodes and shows.
+      Aggregates shares, zaps, and total satoshis sent to podcast content.
+    columns:
+      - name: content_guid
+        description: "Either episode_guid or show_guid"
+      - name: content_type
+        description: "episode or show"
+      - name: event_date
+        description: "Date of the aggregated activity"
+      - name: share_count
+        description: "Number of share events (kind 1)"
+      - name: zap_count
+        description: "Number of zap receipts (kind 9735)"
+      - name: total_zap_sats
+        description: "Total zap amount in satoshis"
+      - name: unique_interactors
+        description: "Unique npubs interacting with this content on this date"
+      - name: total_events
+        description: "Total distinct events (shares + zaps)"

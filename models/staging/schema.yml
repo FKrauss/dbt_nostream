@@ -73,3 +73,87 @@ models:
         description: "Number of accounts using this exact description"
       - name: max_followers_with_description
         description: "Maximum follower count among all accounts with this description"
+
+  - name: stg_podcast_events
+    description: "Staging model for Nostr events referencing podcasts via NIP-73 i-tags. Deduplicated across relays."
+    columns:
+      - name: event_id
+        description: "Unique identifier of the Nostr event"
+      - name: npub
+        description: "Bech32 encoded public key of the event author"
+      - name: author_pubkey
+        description: "Hex encoded public key of the event author"
+      - name: kind
+        description: "Event kind (1=share, 9735=zap, 1111=comment)"
+      - name: created_at
+        description: "Timestamp when the event was created"
+      - name: content
+        description: "Text content of the event"
+      - name: relay_url
+        description: "URL of the relay where the event was ingested"
+      - name: episode_guid
+        description: "GUID of the podcast episode extracted from i-tag"
+      - name: episode_url
+        description: "URL pointing to the podcast episode"
+      - name: show_guid
+        description: "GUID of the podcast show/feed extracted from i-tag"
+      - name: show_url
+        description: "URL pointing to the podcast show/feed"
+      - name: publisher_guid
+        description: "GUID of the podcast publisher extracted from i-tag"
+      - name: publisher_url
+        description: "URL pointing to the podcast publisher"
+
+  - name: stg_podcast_zaps
+    description: "Staging model for Lightning zap receipts (kind 9735) targeting podcasts. Extracts amount, recipient, and podcast refs."
+    columns:
+      - name: event_id
+        description: "Unique identifier of the zap receipt"
+      - name: npub
+        description: "Bech32 encoded public key of the zapper"
+      - name: author_pubkey
+        description: "Hex encoded public key of the zapper"
+      - name: created_at
+        description: "Timestamp when the zap receipt was created"
+      - name: episode_guid
+        description: "GUID of the episode that was zapped"
+      - name: show_guid
+        description: "GUID of the show that was zapped"
+      - name: publisher_guid
+        description: "GUID of the publisher that was zapped"
+      - name: recipient_pubkey
+        description: "Hex pubkey of the recipient (p tag)"
+      - name: bolt11_invoice
+        description: "Lightning invoice string (bolt11 tag)"
+      - name: zap_request_json
+        description: "Serialized zap request JSON (description tag)"
+      - name: amount_msats
+        description: "Zap amount in millisatoshis extracted from the zap request description"
+
+  - name: int_podcast_episodes
+    description: "Intermediate model that aggregates podcast episode references to show/publisher metadata."
+    columns:
+      - name: episode_guid
+        description: "GUID of the podcast episode"
+      - name: show_guid
+        description: "Associated podcast show/feed GUID"
+      - name: publisher_guid
+        description: "Associated podcast publisher GUID"
+      - name: episode_url
+        description: "URL pointing to the episode"
+      - name: show_url
+        description: "URL pointing to the show/feed"
+      - name: first_seen_at
+        description: "First time this episode was observed in the dataset"
+      - name: last_seen_at
+        description: "Most recent time this episode was observed"
+      - name: total_event_count
+        description: "Total podcast-referencing events for this episode"
+      - name: share_count
+        description: "Number of share events (kind 1) referencing this episode"
+      - name: zap_count
+        description: "Number of zap receipts (kind 9735) referencing this episode"
+      - name: comment_count
+        description: "Number of comment events (kind 1111) referencing this episode"
+      - name: unique_interactors
+        description: "Unique npubs interacting with this episode"
