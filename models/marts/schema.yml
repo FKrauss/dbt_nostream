@@ -286,3 +286,33 @@ models:
         description: "Unique zapper pubkeys"
       - name: total_zap_sats
         description: "Total zap amount in satoshis"
+
+  - name: fct_polls
+    description: "Poll metrics mart. Combines NIP-88 poll creation events (kind 1068) with aggregated vote counts from kind 1018. One row per poll."
+    columns:
+      - name: poll_event_id
+        description: "Unique identifier of the poll event"
+      - name: author_npub
+        description: "Bech32 encoded public key of the poll author"
+      - name: author_pubkey
+        description: "Hex encoded public key of the poll author"
+      - name: poll_created_at
+        description: "Timestamp when the poll was created"
+      - name: poll_question
+        description: "Poll question text"
+      - name: poll_type
+        description: "Poll type (singlechoice, multiplechoice)"
+      - name: ends_at
+        description: "Timestamp when the poll ends"
+      - name: client
+        description: "Client that published the poll"
+      - name: option_count
+        description: "Number of available options"
+      - name: is_open
+        description: "Boolean indicating if the poll is still open"
+      - name: total_votes
+        description: "Total number of votes cast on this poll"
+      - name: total_unique_voters
+        description: "Number of unique voters"
+      - name: latest_vote_date
+        description: "Date of the most recent vote"

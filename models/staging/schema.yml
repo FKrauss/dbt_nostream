@@ -267,3 +267,49 @@ models:
         description: "Number of events with status=ended"
       - name: statuses_seen
         description: "Array of unique statuses observed for this stream"
+
+  - name: stg_poll_events
+    description: "Staging model for NIP-88 Poll creation events (kind 1068). Extracts question, options, type, end date, and client. Deduplicated across relays."
+    columns:
+      - name: poll_event_id
+        description: "Unique identifier of the poll event"
+      - name: npub
+        description: "Bech32 encoded public key of the poll author"
+      - name: author_pubkey
+        description: "Hex encoded public key of the poll author"
+      - name: created_at
+        description: "Timestamp when the poll was created"
+      - name: poll_question
+        description: "Poll question text from the content field"
+      - name: poll_type
+        description: "Poll type from the polltype tag (singlechoice, multiplechoice)"
+      - name: ends_at
+        description: "Timestamp when the poll ends, parsed from the endsAt tag"
+      - name: client
+        description: "Client that published the poll"
+      - name: poll_options
+        description: "Array of structs with option_index and option_text"
+      - name: option_count
+        description: "Number of options in the poll"
+      - name: is_open
+        description: "Boolean indicating if the poll is still open"
+
+  - name: stg_poll_votes
+    description: "Staging model for NIP-88 Poll Response / Vote events (kind 1018). Links votes to parent poll via e-tag. Deduplicated across relays."
+    columns:
+      - name: vote_event_id
+        description: "Unique identifier of the vote event"
+      - name: npub
+        description: "Bech32 encoded public key of the voter"
+      - name: author_pubkey
+        description: "Hex encoded public key of the voter"
+      - name: created_at
+        description: "Timestamp when the vote was cast"
+      - name: selected_option
+        description: "The option value selected by the voter"
+      - name: poll_event_id
+        description: "Event ID of the poll being voted on (from e-tag)"
+      - name: label
+        description: "Optional label from l-tag"
+      - name: relay_url
+        description: "URL of the relay where the vote was ingested"
