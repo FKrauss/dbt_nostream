@@ -9,7 +9,7 @@ with base as (
     created_at,
     content,                -- JSON of relay preferences
     tags,                   -- JSON array of Nostr tags
-    relayUrl                -- where we saw it
+    relay_url                -- where we saw it
   from {{ ref('stg_nostr_events_all') }}
   where kind = 3
 ),
@@ -30,6 +30,6 @@ select
   created_at,
   content,
   tags,
-  relayUrl
+  relay_url
 from ranked
 where rn = 1
