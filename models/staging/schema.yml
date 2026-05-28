@@ -15,7 +15,7 @@ models:
         description: "Type of Nostr event (cast as integer for easy joining)"
       - name: npub
         description: "Bech32 encoded public key"
-      - name: relayUrl
+      - name: relay_url
         description: "URL of the relay where the event was published"
       - name: sig
         description: "Cryptographic signature of the event"

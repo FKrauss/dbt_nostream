@@ -20,7 +20,7 @@ vars:
   bigquery_source_project: "replit-gcp"
   bigquery_source_dataset: "Nostr"
   bigquery_flat_dataset: "Nostr"
-  lookback_days: 90
+  lookback_days: 3
   flat_incremental_strategy: "insert_overwrite"
   shared_schemas:
     - "Nostr"
@@ -33,12 +33,13 @@ models:
   dbt_nostream:
     flat:
       +materialized: incremental
-      +schema: "{{ 'Nostr' }}"
+      +schema: "Nostr"
       +partition_by:
         field: ingestion_date
         data_type: date
         granularity: day
       +cluster_by: ["kind"]
+      +incremental_strategy: "{{ var('flat_incremental_strategy', 'insert_overwrite') }}"
     staging:
       +materialized: view
       +schema: staging

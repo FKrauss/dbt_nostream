@@ -11,7 +11,8 @@
         {{ default_schema }}
 
     {# shared schemas bypass target prefixing #}
-    {% elif custom_schema_name in var('shared_schemas', []) %}
+    {% set shared_schemas = var('shared_schemas', []) | map('trim') | list %}
+    {% elif (custom_schema_name | trim) in shared_schemas %}
         {{ custom_schema_name | trim }}
 
     {# specified custom schema names go to the schema name prepended with the default schema name in prod #}

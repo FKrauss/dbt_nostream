@@ -17,7 +17,7 @@ WITH note_events AS (
     DATE(TIMESTAMP(JSON_VALUE(payload, '$.createdAt'))) AS published_date,
     LEFT(JSON_VALUE(payload, '$.content'), 280) AS content_preview
   FROM `replit-gcp.Nostr.events`
-  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
+  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 DAY)
     AND CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 1
 ),
 
@@ -29,7 +29,7 @@ reactions AS (
     COUNT(DISTINCT JSON_VALUE(payload, '$.npub')) AS unique_reactors
   FROM `replit-gcp.Nostr.events`,
   UNNEST(JSON_EXTRACT_ARRAY(JSON_VALUE(payload, '$.tags'))) AS tag
-  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
+  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 DAY)
     AND CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 7
     AND JSON_VALUE(tag, '$[0]') = 'e'
   GROUP BY target_note_id
@@ -43,7 +43,7 @@ reposts AS (
     COUNT(DISTINCT JSON_VALUE(payload, '$.npub')) AS unique_reposters
   FROM `replit-gcp.Nostr.events`,
   UNNEST(JSON_EXTRACT_ARRAY(JSON_VALUE(payload, '$.tags'))) AS tag
-  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
+  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 DAY)
     AND CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 6
     AND JSON_VALUE(tag, '$[0]') = 'e'
   GROUP BY target_note_id
@@ -69,7 +69,7 @@ zaps AS (
     ) AS total_amount_msats
   FROM `replit-gcp.Nostr.events`,
   UNNEST(JSON_EXTRACT_ARRAY(JSON_VALUE(payload, '$.tags'))) AS tag
-  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
+  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 DAY)
     AND CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 9735
     AND JSON_VALUE(tag, '$[0]') = 'e'
   GROUP BY target_note_id
@@ -84,7 +84,7 @@ replies AS (
     COUNT(DISTINCT JSON_VALUE(payload, '$.npub')) AS unique_repliers
   FROM `replit-gcp.Nostr.events`,
   UNNEST(JSON_EXTRACT_ARRAY(JSON_VALUE(payload, '$.tags'))) AS tag
-  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
+  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 DAY)
     AND CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 1
     AND JSON_VALUE(tag, '$[0]') = 'e'
   GROUP BY parent_note_id

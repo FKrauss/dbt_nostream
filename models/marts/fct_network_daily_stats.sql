@@ -36,6 +36,6 @@ SELECT
   COUNTIF(CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 9735) AS total_zap_events
 
 FROM `replit-gcp.Nostr.events`
-WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
+  WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 DAY)
 GROUP BY activity_date
 ORDER BY activity_date DESC

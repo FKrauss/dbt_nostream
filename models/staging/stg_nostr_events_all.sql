@@ -11,6 +11,8 @@ SELECT
   raw_payload,
   ingestion_date
 
-FROM {{ source('nostr_flat', 'events_flat') }}
+FROM {{ ref('stg_flat_events') }}
+
+WHERE ingestion_date >= DATE_SUB(CURRENT_DATE(), INTERVAL {{ var('lookback_days', 3) }} DAY)
 
 QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY ingestion_date DESC) = 1

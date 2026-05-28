@@ -10,12 +10,3 @@ sources:
           Raw ingestion-time partitioned events table from the Nostream relay.
           Contains a JSON payload column with NIP-01 envelope fields.
 
-  - name: nostr_flat
-    database: "{{ var('bigquery_source_project', 'replit-gcp') }}"
-    schema: "{{ var('bigquery_flat_dataset', 'Nostr') }}"
-    tables:
-      - name: events_flat
-        description: >
-          Flattened, target-agnostic events table partitioned by ingestion_date
-          and clustered by kind. Built incrementally from nostr_raw.events.
-
