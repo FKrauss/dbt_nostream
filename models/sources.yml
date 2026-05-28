@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: nostr_raw
+    database: "{{ var('bigquery_source_project', 'replit-gcp') }}"
+    schema: "{{ var('bigquery_source_dataset', 'Nostr') }}"
+    tables:
+      - name: events
+        description: >
+          Raw ingestion-time partitioned events table from the Nostream relay.
+          Contains a JSON payload column with NIP-01 envelope fields.
+
