@@ -47,6 +47,10 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
+args = "bash setup_gcp_credentials.sh"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
 args = "dbt deps"
 
 [[workflows.workflow.tasks]]
@@ -57,6 +61,10 @@ args = "dbt run --target dev"
 name = "DBT Dev - Test Only"
 author = 38059905
 mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bash setup_gcp_credentials.sh"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
@@ -85,6 +93,23 @@ args = "dbt compile --profiles-dir ."
 
 [workflows.workflow.metadata]
 outputType = "console"
+
+[[workflows.workflow]]
+name = "DBT Dev - Full Build"
+author = 38059905
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bash setup_gcp_credentials.sh"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "dbt deps"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "dbt build --target dev"
 
 [agent]
 expertMode = true
