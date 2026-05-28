@@ -21,6 +21,7 @@ vars:
   bigquery_source_dataset: "Nostr"
   bigquery_flat_dataset: "Nostr"
   lookback_days: 3
+  full_refresh_lookback_days: 90
   flat_incremental_strategy: "insert_overwrite"
   shared_schemas:
     - "Nostr"

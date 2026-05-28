@@ -1,6 +1,7 @@
 {% macro generate_schema_name(custom_schema_name, node) %}
 
     {% set default_schema = target.schema %}
+    {% set shared_schemas = var('shared_schemas', []) | map('trim') | list %}
 
     {# seeds go in a global `raw` schema #}
     {% if node.resource_type == 'seed' %}
@@ -11,7 +12,6 @@
         {{ default_schema }}
 
     {# shared schemas bypass target prefixing #}
-    {% set shared_schemas = var('shared_schemas', []) | map('trim') | list %}
     {% elif (custom_schema_name | trim) in shared_schemas %}
         {{ custom_schema_name | trim }}
 

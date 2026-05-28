@@ -16,6 +16,6 @@ FROM {{ source('nostr_raw', 'events') }}
 {% if is_incremental() %}
   WHERE _PARTITIONDATE >= (SELECT COALESCE(MAX(ingestion_date), DATE('1970-01-01')) FROM {{ this }})
 {% else %}
-  WHERE _PARTITIONDATE >= DATE_SUB(CURRENT_DATE(), INTERVAL {{ var('lookback_days', 90) }} DAY)
+  WHERE _PARTITIONDATE >= DATE_SUB(CURRENT_DATE(), INTERVAL {{ var('full_refresh_lookback_days', 90) }} DAY)
 {% endif %}
 
