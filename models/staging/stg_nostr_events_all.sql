@@ -2,7 +2,6 @@ SELECT
   id,
   kind,
   npub,
-  author,
   created_at,
   content,
   relay_url,

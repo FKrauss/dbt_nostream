@@ -11,7 +11,7 @@
 WITH note_events AS (
   SELECT
     JSON_VALUE(payload, '$.id') AS note_id,
-    JSON_VALUE(payload, '$.author') AS author_pubkey,
+    JSON_VALUE(payload, '$.pubkey') AS author_pubkey,
     JSON_VALUE(payload, '$.npub') AS author_npub,
     TIMESTAMP(JSON_VALUE(payload, '$.createdAt')) AS published_at,
     DATE(TIMESTAMP(JSON_VALUE(payload, '$.createdAt'))) AS published_date,

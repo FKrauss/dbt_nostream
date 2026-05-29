@@ -2,7 +2,6 @@ SELECT
   JSON_VALUE(payload, '$.id')            AS id,
   CAST(JSON_VALUE(payload, '$.kind') AS INT64) AS kind,
   JSON_VALUE(payload, '$.npub')          AS npub,
-  JSON_VALUE(payload, '$.author')        AS author,
   TIMESTAMP(JSON_VALUE(payload, '$.createdAt')) AS created_at,
   JSON_VALUE(payload, '$.content')       AS content,
   JSON_VALUE(payload, '$.relayUrl')      AS relay_url,

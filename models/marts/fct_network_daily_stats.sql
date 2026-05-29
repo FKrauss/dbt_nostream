@@ -23,11 +23,11 @@ SELECT
   COUNT(*) AS total_events,
   
   -- Unique participants by event type
-  COUNT(DISTINCT CASE WHEN CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 0 THEN JSON_VALUE(payload, '$.author') END) AS unique_profile_updates,
-  COUNT(DISTINCT CASE WHEN CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 1 THEN JSON_VALUE(payload, '$.author') END) AS unique_note_authors,
-  COUNT(DISTINCT CASE WHEN CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 3 THEN JSON_VALUE(payload, '$.author') END) AS unique_contact_updaters,
-  COUNT(DISTINCT CASE WHEN CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 7 THEN JSON_VALUE(payload, '$.author') END) AS unique_reactors,
-  COUNT(DISTINCT CASE WHEN CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 9735 THEN JSON_VALUE(payload, '$.author') END) AS unique_zappers,
+  COUNT(DISTINCT CASE WHEN CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 0 THEN JSON_VALUE(payload, '$.npub') END) AS unique_profile_updates,
+  COUNT(DISTINCT CASE WHEN CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 1 THEN JSON_VALUE(payload, '$.npub') END) AS unique_note_authors,
+  COUNT(DISTINCT CASE WHEN CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 3 THEN JSON_VALUE(payload, '$.npub') END) AS unique_contact_updaters,
+  COUNT(DISTINCT CASE WHEN CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 7 THEN JSON_VALUE(payload, '$.npub') END) AS unique_reactors,
+  COUNT(DISTINCT CASE WHEN CAST(JSON_VALUE(payload, '$.kind') AS INT64) = 9735 THEN JSON_VALUE(payload, '$.npub') END) AS unique_zappers,
   
   -- Total unique active users (any event type) - using npub for user identification
   COUNT(DISTINCT JSON_VALUE(payload, '$.npub')) AS daily_active_users,

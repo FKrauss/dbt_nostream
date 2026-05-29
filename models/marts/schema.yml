@@ -60,9 +60,9 @@ models:
         tests:
           - not_null
       - name: author_npub
-        description: "Bech32 encoded public key of the note author"
+        description: "Bech32 encoded public key of the note creator"
       - name: author_pubkey
-        description: "Hex encoded public key of the note author"
+        description: "Hex encoded public key of the note creator"
       - name: published_at
         description: "Timestamp when the note was published"
         tests:

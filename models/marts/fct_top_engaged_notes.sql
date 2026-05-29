@@ -11,7 +11,7 @@
 WITH note_events AS (
   SELECT
     JSON_VALUE(payload, '$.id') AS note_id,
-    JSON_VALUE(payload, '$.author') AS author_pubkey,
+    JSON_VALUE(payload, '$.pubkey') AS author_pubkey,
     TIMESTAMP(JSON_VALUE(payload, '$.createdAt')) AS published_at,
     JSON_VALUE(payload, '$.content') AS content_preview,
     1 AS note_count
@@ -25,7 +25,7 @@ reactions AS (
     -- Tag "e" contains the target event ID
     JSON_VALUE(tag, '$[1]') AS target_note_id,
     COUNT(*) AS reaction_count,
-    COUNT(DISTINCT JSON_VALUE(payload, '$.author')) AS unique_reactors
+    COUNT(DISTINCT JSON_VALUE(payload, '$.npub')) AS unique_reactors
   FROM `replit-gcp.Nostr.events`,
   UNNEST(JSON_EXTRACT_ARRAY(JSON_VALUE(payload, '$.tags'))) AS tag
   WHERE DATE(Timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
