@@ -11,7 +11,7 @@
 SELECT
   -- Event identifiers from the main payload
   JSON_VALUE(payload, '$.id') AS event_id,
-  JSON_VALUE(payload, '$.pubkey') AS zapper_pubkey,
+  JSON_VALUE(payload, '$.npub') AS zapper_pubkey,
   TIMESTAMP(JSON_VALUE(payload, '$.createdAt')) AS created_at,
   
   -- Extract tags by type using UNNEST
